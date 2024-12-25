@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5583349228883712324}
   - component: {fileID: 6761486143899582272}
+  - component: {fileID: 6943854300908166331}
   m_Layer: 0
   m_Name: CarrotADS
   m_TagString: Untagged
@@ -47,3 +48,16 @@ MonoBehaviour:
   bannerAdUnitId: ca-app-pub-5388516931803092/1946855140
   interstitialAdUnitId: ca-app-pub-5388516931803092/1278709103
   rewardedAdUnitId: ca-app-pub-5388516931803092/3413886038
+  admob: {fileID: 6943854300908166331}
+--- !u!114 &6943854300908166331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2470643001448019751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cbc5c87c55e8df4f844eda676130190, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
