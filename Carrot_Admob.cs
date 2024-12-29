@@ -27,13 +27,23 @@ namespace Carrot
 
         private void RequestBanner()
         {
+            if(bannerView != null)
+            {
+                bannerView.Destroy();
+                bannerView = null;
+            }
             bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, AdPosition.Top);
             bannerView.LoadAd(new AdRequest());
             bannerView.Show();
         }
 
         private void RequestInterstitial()
-        {
+        {   if (interstitial != null)
+            {
+                interstitial.Destroy();
+                interstitial = null;
+            }
+
             InterstitialAd.Load(interstitialAdUnitId, new AdRequest(), (InterstitialAd ad, LoadAdError error) =>
             {
 
@@ -75,7 +85,7 @@ namespace Carrot
 
         public void ShowInterstitialAd()
         {
-            if (interstitial != null && interstitial.CanShowAd())
+            if (interstitial != null)
             {
                 Debug.Log("Showing interstitial ad.");
                 interstitial.Show();

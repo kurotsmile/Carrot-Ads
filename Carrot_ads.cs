@@ -15,23 +15,42 @@ namespace Carrot
 
         [Header("Main Object")]
         public Carrot_Admob admob;
+        private bool is_ads=false;
 
         public void On_Load()
         {
-            admob.Initialize(bannerAdUnitId, interstitialAdUnitId, rewardedAdUnitId);
+            if (PlayerPrefs.GetInt("is_ads", 0) == 0)
+                this.is_ads = true;
+            else
+                this.is_ads = false;
+
+
+            if(this.is_ads) admob.Initialize(bannerAdUnitId, interstitialAdUnitId, rewardedAdUnitId);
         }
 
         public void On_show_interstitial()
         {
-            if(this.count_step>=this.count_step_show_interstitial)
-            {
-                this.count_step=0;
-                admob.ShowInterstitialAd();
+            if(this.is_ads){
+                if(this.count_step>=this.count_step_show_interstitial)
+                {
+                    this.count_step=0;
+                    admob.ShowInterstitialAd();
+                }
+                else
+                {
+                    this.count_step++;
+                }
             }
-            else
-            {
-                this.count_step++;
-            }
+        }
+
+        public void RemoveAds(){
+            this.admob.HideBannerAd();
+            PlayerPrefs.SetInt("is_ads",1);
+            this.is_ads=false;
+        }
+
+        public bool get_status_ads(){
+            return this.is_ads;
         }
     }
 }
