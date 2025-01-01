@@ -27,6 +27,7 @@ namespace Carrot
 
         private void RequestBanner()
         {
+            Debug.Log("Requesting banner ad.");
             if(bannerView != null)
             {
                 bannerView.Destroy();
@@ -34,7 +35,7 @@ namespace Carrot
             }
             bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, AdPosition.Top);
             bannerView.LoadAd(new AdRequest());
-            bannerView.Show();
+            //bannerView.Show();
         }
 
         private void RequestInterstitial()
