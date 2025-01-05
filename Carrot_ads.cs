@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Carrot
 {
@@ -13,9 +14,13 @@ namespace Carrot
         public string interstitialAdUnitId = "ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx";
         public string rewardedAdUnitId = "ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx";
 
+        [Header("Emplement Ui Ads")]
+        public GameObject[] emplement_Ads;
+
         [Header("Main Object")]
         public Carrot_Admob admob;
         private bool is_ads=false;
+        public UnityAction onRewardedSuccess;
 
         public void On_Load()
         {
@@ -24,8 +29,21 @@ namespace Carrot
             else
                 this.is_ads = false;
 
+            if(this.is_ads){
+                admob.Initialize(bannerAdUnitId, interstitialAdUnitId, rewardedAdUnitId);
+            }
+            this.Check_Emplement_Ads();
+        }
 
-            if(this.is_ads) admob.Initialize(bannerAdUnitId, interstitialAdUnitId, rewardedAdUnitId);
+        private void Check_Emplement_Ads(){
+            if(this.emplement_Ads.Length!=0){
+                for(int i=0;i<this.emplement_Ads.Length;i++){
+                    if(this.is_ads)
+                        this.emplement_Ads[i].SetActive(true);
+                    else
+                        this.emplement_Ads[i].SetActive(false);
+                }
+            }
         }
 
         public void On_show_interstitial()
@@ -47,6 +65,7 @@ namespace Carrot
         {
             if(this.is_ads){
                 admob.ShowRewardedAd();
+                admob.onRewardedSuccess=this.onRewardedSuccess;
             }
         }
 
@@ -54,6 +73,7 @@ namespace Carrot
             this.admob.HideBannerAd();
             PlayerPrefs.SetInt("is_ads",1);
             this.is_ads=false;
+            this.Check_Emplement_Ads();
         }
 
         public bool get_status_ads(){

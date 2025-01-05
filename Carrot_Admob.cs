@@ -1,5 +1,6 @@
 using UnityEngine;
 using GoogleMobileAds.Api;
+using UnityEngine.Events;
 
 namespace Carrot
 {
@@ -12,6 +13,8 @@ namespace Carrot
         private string bannerAdUnitId = "ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx";
         private string interstitialAdUnitId = "ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx";
         private string rewardedAdUnitId = "ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx";
+
+        public UnityAction onRewardedSuccess;
         public void Initialize(string bannerAdUnitId, string interstitialAdUnitId, string rewardedAdUnitId)
         {
             this.bannerAdUnitId = bannerAdUnitId;
@@ -104,8 +107,10 @@ namespace Carrot
                 Debug.Log("Showing rewarded ad.");
                 rewardedAd.Show((Reward reward) =>
                 {
+                    this.onRewardedSuccess?.Invoke();
                     Debug.Log(System.String.Format("Rewarded ad granted a reward: {0} {1}", reward.Amount, reward.Type));
                 });
+                rewardedAd.OnAdPaid += HandleUserEarnedReward;
             }
             else
             {
@@ -119,6 +124,11 @@ namespace Carrot
             {
                 bannerView.Hide();
             }
+        }
+
+        private void HandleUserEarnedReward(AdValue adValue)
+        {
+            onRewardedSuccess?.Invoke();
         }
     }
 }
