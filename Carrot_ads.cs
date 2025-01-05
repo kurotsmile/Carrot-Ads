@@ -43,6 +43,13 @@ namespace Carrot
             }
         }
 
+        public void On_show_rewarded()
+        {
+            if(this.is_ads){
+                admob.ShowRewardedAd();
+            }
+        }
+
         public void RemoveAds(){
             this.admob.HideBannerAd();
             PlayerPrefs.SetInt("is_ads",1);
