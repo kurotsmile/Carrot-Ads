@@ -6,9 +6,9 @@ public class IronSourceAdsBanner : MonoBehaviour
     void CreateBannerAd() {
         // Create ad configuration - optional
         var adConfig = new LevelPlayBannerAd.Config.Builder()
-            //.SetSize(LevelPlayAdSize.BANNER)
+            .SetSize(LevelPlayAdSize.BANNER)
             .SetPlacementName("placementName")
-           // .SetPosition(LevelPlayBannerPosition.BottomCenter)
+            .SetPosition(LevelPlayBannerPosition.BottomCenter)
             .SetDisplayOnLoad(true)
             .SetRespectSafeArea(true)
             .Build();
@@ -25,23 +25,26 @@ public class IronSourceAdsBanner : MonoBehaviour
         bannerAd.OnAdExpanded += BannerOnAdExpandedEvent;
     }
     public void LoadBannerAd() {
-        //Load the banner ad 
         bannerAd.LoadAd();
     }
     public void ShowBannerAd() {
-        //Show the banner ad, call this method only if you turned off the auto show when you created this banner instance.
         bannerAd.ShowAd();
     }
     public void HideBannerAd() {
-        //Hide banner
         bannerAd.HideAd();
     }
     public void DestroyBannerAd() {
-        //Destroy banner
         bannerAd.DestroyAd();
     }
-    //Implement BannAd Events
-    public void BannerOnAdLoadedEvent(LevelPlayAdInfo adInfo) {}
+    
+    public void PauseAutoRefresh() {
+        bannerAd.PauseAutoRefresh();
+    }
+    public void ResumeAutoRefresh() {
+        bannerAd.ResumeAutoRefresh();
+    }
+
+    public void BannerOnAdLoadedEvent(LevelPlayAdInfo adInfo) { }
     public void BannerOnAdLoadFailedEvent(LevelPlayAdError ironSourceError) {}
     public void BannerOnAdClickedEvent(LevelPlayAdInfo adInfo) {}
     public void BannerOnAdDisplayedEvent(LevelPlayAdInfo adInfo) {}
