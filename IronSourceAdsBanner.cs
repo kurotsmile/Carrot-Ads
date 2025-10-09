@@ -3,19 +3,15 @@ using Unity.Services.LevelPlay;
 public class IronSourceAdsBanner : MonoBehaviour
 {
     private LevelPlayBannerAd bannerAd;
-    void CreateBannerAd() {
-        // Create ad configuration - optional
+    public void CreateBannerAd(string id_banner_ads) {
         var adConfig = new LevelPlayBannerAd.Config.Builder()
             .SetSize(LevelPlayAdSize.BANNER)
-            .SetPlacementName("placementName")
-            .SetPosition(LevelPlayBannerPosition.BottomCenter)
+            .SetPosition(LevelPlayBannerPosition.TopCenter)
             .SetDisplayOnLoad(true)
             .SetRespectSafeArea(true)
             .Build();
         
-        // Create banner instance
-        bannerAd = new LevelPlayBannerAd("bannerAdUnitId", adConfig);
-        // Subscribe BannerAd events
+        bannerAd = new LevelPlayBannerAd(id_banner_ads, adConfig);
         bannerAd.OnAdLoaded += BannerOnAdLoadedEvent;
         bannerAd.OnAdLoadFailed += BannerOnAdLoadFailedEvent;
         bannerAd.OnAdDisplayed += BannerOnAdDisplayedEvent;
@@ -34,7 +30,7 @@ public class IronSourceAdsBanner : MonoBehaviour
         bannerAd.HideAd();
     }
     public void DestroyBannerAd() {
-        bannerAd.DestroyAd();
+        bannerAd?.DestroyAd();
     }
     
     public void PauseAutoRefresh() {
@@ -44,7 +40,10 @@ public class IronSourceAdsBanner : MonoBehaviour
         bannerAd.ResumeAutoRefresh();
     }
 
-    public void BannerOnAdLoadedEvent(LevelPlayAdInfo adInfo) { }
+    public void BannerOnAdLoadedEvent(LevelPlayAdInfo adInfo)
+    {
+        this.ShowBannerAd();
+    }
     public void BannerOnAdLoadFailedEvent(LevelPlayAdError ironSourceError) {}
     public void BannerOnAdClickedEvent(LevelPlayAdInfo adInfo) {}
     public void BannerOnAdDisplayedEvent(LevelPlayAdInfo adInfo) {}

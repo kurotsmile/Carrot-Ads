@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5798580663018266885}
   - component: {fileID: 8819394031016630929}
+  - component: {fileID: 2612407488178262245}
+  - component: {fileID: 8153605920526088167}
+  - component: {fileID: 431942712455084014}
   m_Layer: 0
   m_Name: Carrot_Ads
   m_TagString: Untagged
@@ -50,3 +53,42 @@ MonoBehaviour:
   id_banner: 
   id_video: 
   id_rewarded: 
+  bannerAd: {fileID: 2612407488178262245}
+  interstitialAd: {fileID: 8153605920526088167}
+  RewardedAd: {fileID: 431942712455084014}
+--- !u!114 &2612407488178262245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206775702983524856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e75c0d516805d4eb5d43b5b6f36662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8153605920526088167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206775702983524856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac73ae6aae23d4cb38d43cbb654ec4f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &431942712455084014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206775702983524856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c7b844114c94bbca8f3912a770b999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -4,9 +4,9 @@ using UnityEngine;
 public class IronSourceAdsInterstitial : MonoBehaviour
 {
     private LevelPlayInterstitialAd interstitialAd;
-    public void CreateInterstitialAd() {
+    public void CreateInterstitialAd(string id_ads_Inters) {
 	      //Create InterstitialAd instance
-        interstitialAd= new LevelPlayInterstitialAd("interstitialAdUnitId");
+        interstitialAd= new LevelPlayInterstitialAd(id_ads_Inters);
 
         //Subscribe InterstitialAd events
         interstitialAd.OnAdLoaded += InterstitialOnAdLoadedEvent;

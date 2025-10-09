@@ -1,11 +1,14 @@
 using Unity.Services.LevelPlay;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class IronSourceRewarded : MonoBehaviour
 {
     private LevelPlayRewardedAd RewardedAd;
-    public void CreateRewardedAd() {
-        RewardedAd= new LevelPlayRewardedAd("RewardedAdUnitId");
+    private bool isRewarded = false;
+    public UnityAction onRewardedSuccess;
+    public void CreateRewardedAd(string id_rewarded_ads) {
+        RewardedAd= new LevelPlayRewardedAd(id_rewarded_ads);
         RewardedAd.OnAdLoaded += RewardedOnAdLoadedEvent;
         RewardedAd.OnAdLoadFailed += RewardedOnAdLoadFailedEvent;
         RewardedAd.OnAdDisplayed += RewardedOnAdDisplayedEvent;
@@ -20,7 +23,8 @@ public class NewMonoBehaviourScript : MonoBehaviour
     }
     public void ShowRewardedAd() {
         if (RewardedAd.IsAdReady()) {
-              RewardedAd.ShowAd();
+            RewardedAd.ShowAd();
+            isRewarded = false;
         }
     }
     
@@ -29,8 +33,17 @@ public class NewMonoBehaviourScript : MonoBehaviour
     void RewardedOnAdClickedEvent(LevelPlayAdInfo adInfo) { }
     void RewardedOnAdDisplayedEvent(LevelPlayAdInfo adInfo) { }
     void RewardedOnAdDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error){}
-    void RewardedOnAdClosedEvent(LevelPlayAdInfo adInfo) { }
-    void RewardedOnAdRewarded(LevelPlayAdInfo adInfo, LevelPlayReward adReward){} 
+    void RewardedOnAdClosedEvent(LevelPlayAdInfo adInfo)
+    {
+        if (isRewarded)
+        {
+            onRewardedSuccess?.Invoke();
+        }
+    }
+    void RewardedOnAdRewarded(LevelPlayAdInfo adInfo, LevelPlayReward adReward)
+    {
+        isRewarded=true;
+    } 
     void RewardedOnAdInfoChangedEvent(LevelPlayAdInfo adInfo) { }  
 }
 

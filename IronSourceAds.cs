@@ -1,6 +1,6 @@
-using com.unity3d.mediation;
 using UnityEngine;
 using UnityEngine.Events;
+using Unity.Services.LevelPlay;
 
 public class IronSourceAds : MonoBehaviour
 {
@@ -17,8 +17,9 @@ public class IronSourceAds : MonoBehaviour
     public string id_video;
     public string id_rewarded;
     public UnityAction onRewardedSuccess;
-    private LevelPlayBannerAd bannerAd;
-    private LevelPlayInterstitialAd interstitialAd;
+    public IronSourceAdsBanner bannerAd;
+    public IronSourceAdsInterstitial interstitialAd;
+    public IronSourceRewarded RewardedAd;
     private bool is_ads = false;
 
     public void On_Load()
@@ -30,39 +31,21 @@ public class IronSourceAds : MonoBehaviour
 
         if (this.is_ads)
         {
-            IronSource.Agent.validateIntegration();
-            LevelPlay.Init(this.app_key,adFormats:new []{LevelPlayAdFormat.REWARDED});
-
             LevelPlay.OnInitSuccess += SdkInitializationCompletedEvent;
             LevelPlay.OnInitFailed += SdkInitializationFailedEvent;
+            LevelPlay.Init(app_key);
         }
         this.Check_Emplement_Ads();
     }
-
-    void EnableAds()
-    {
-        this.is_ads=true;
-        //Add ImpressionSuccess Event
-        IronSourceEvents.onImpressionDataReadyEvent += ImpressionDataReadyEvent;
-
-        //Add AdInfo Rewarded Video Events
-        IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
-        IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedVideoOnAdClosedEvent;
-        IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideoOnAdAvailable;
-        IronSourceRewardedVideoEvents.onAdUnavailableEvent += RewardedVideoOnAdUnavailable;
-        IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedVideoOnAdShowFailedEvent;
-        IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
-        IronSourceRewardedVideoEvents.onAdClickedEvent += RewardedVideoOnAdClickedEvent;
-
-        CreateBannerAd();
-        CreateInterstitialAd();
-        this.LoadInterstitialAd();
-    }
-
     void SdkInitializationCompletedEvent(LevelPlayConfiguration config)
     {
+        LevelPlay.LaunchTestSuite();
         Debug.Log("unity-script: I got SdkInitializationCompletedEvent with config: "+ config);
-        EnableAds();
+        bannerAd.CreateBannerAd(id_banner);
+        bannerAd.LoadBannerAd();
+        interstitialAd.CreateInterstitialAd(id_video);
+        RewardedAd.CreateRewardedAd(id_rewarded);
+        RewardedAd.onRewardedSuccess = onRewardedSuccess;
     }
     
     void SdkInitializationFailedEvent(LevelPlayInitError error)
@@ -72,7 +55,7 @@ public class IronSourceAds : MonoBehaviour
 
     void OnApplicationPause(bool isPaused)
     {
-        IronSource.Agent.onApplicationPause(isPaused);
+        //IronSource.Agent.onApplicationPause(isPaused);
     }
 
     private void Check_Emplement_Ads()
@@ -89,116 +72,23 @@ public class IronSourceAds : MonoBehaviour
         }
     }
 
-    #region AdInfo Rewarded Video
-    void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got RewardedVideoOnAdOpenedEvent With AdInfo " + adInfo);
-    }
-
-    void RewardedVideoOnAdClosedEvent(IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got RewardedVideoOnAdClosedEvent With AdInfo " + adInfo);
-    }
-
-    void RewardedVideoOnAdAvailable(IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got RewardedVideoOnAdAvailable With AdInfo " + adInfo);
-    }
-
-    void RewardedVideoOnAdUnavailable()
-    {
-        Debug.Log("unity-script: I got RewardedVideoOnAdUnavailable");
-    }
-
-    void RewardedVideoOnAdShowFailedEvent(IronSourceError ironSourceError, IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got RewardedVideoOnAdShowFailedEvent With Error" + ironSourceError + "And AdInfo " + adInfo);
-    }
-
-    void RewardedVideoOnAdRewardedEvent(IronSourcePlacement ironSourcePlacement, IronSourceAdInfo adInfo)
-    {
-        this.onRewardedSuccess?.Invoke();
-        Debug.Log("unity-script: I got RewardedVideoOnAdRewardedEvent With Placement" + ironSourcePlacement + "And AdInfo " + adInfo);
-    }
-
-    void RewardedVideoOnAdClickedEvent(IronSourcePlacement ironSourcePlacement, IronSourceAdInfo adInfo)
-    {
-        Debug.Log("unity-script: I got RewardedVideoOnAdClickedEvent With Placement" + ironSourcePlacement + "And AdInfo " + adInfo);
-    }
-    #endregion
-
-    #region Banner Ads
-    void CreateBannerAd()
-    {
-        bannerAd = new LevelPlayBannerAd(this.id_banner, LevelPlayAdSize.BANNER, LevelPlayBannerPosition.TopCenter);
-        bannerAd.OnAdLoaded += BannerOnAdLoadedEvent;
-        bannerAd.OnAdLoadFailed += BannerOnAdLoadFailedEvent;
-        bannerAd.OnAdDisplayed += BannerOnAdDisplayedEvent;
-        bannerAd.OnAdDisplayFailed += BannerOnAdDisplayFailedEvent;
-        bannerAd.OnAdClicked += BannerOnAdClickedEvent;
-        bannerAd.OnAdCollapsed += BannerOnAdCollapsedEvent;
-        bannerAd.OnAdLeftApplication += BannerOnAdLeftApplicationEvent;
-        bannerAd.OnAdExpanded += BannerOnAdExpandedEvent;
-        this.LoadBannerAd();
-    }
-
-    void LoadBannerAd()
-    {
-        if(bannerAd!=null) bannerAd.LoadAd();
-    }
     public void ShowBannerAd()
     {
-        if(bannerAd!=null) bannerAd.ShowAd();
+        if (bannerAd != null&&is_ads) bannerAd.ShowBannerAd();
     }
     public void HideBannerAd()
     {
-        if(bannerAd!=null) bannerAd.HideAd();
+        if (bannerAd != null&&is_ads) bannerAd.HideBannerAd();
     }
+    
     public void DestroyBannerAd()
     {
-        if(bannerAd!=null) bannerAd.DestroyAd();
+        if (bannerAd != null&&is_ads) bannerAd.DestroyBannerAd();
     }
-
-    void BannerOnAdLoadedEvent(LevelPlayAdInfo adInfo) { 
-        this.ShowBannerAd();
-    }
-    void BannerOnAdLoadFailedEvent(LevelPlayAdError ironSourceError) { }
-    void BannerOnAdClickedEvent(LevelPlayAdInfo adInfo) { }
-    void BannerOnAdDisplayedEvent(LevelPlayAdInfo adInfo) { }
-    void BannerOnAdDisplayFailedEvent(LevelPlayAdDisplayInfoError adInfoError) { }
-    void BannerOnAdCollapsedEvent(LevelPlayAdInfo adInfo) { }
-    void BannerOnAdLeftApplicationEvent(LevelPlayAdInfo adInfo) { }
-    void BannerOnAdExpandedEvent(LevelPlayAdInfo adInfo) { }
-    #endregion
 
     public void ShowRewardedVideo()
     {
-        if (IronSource.Agent.isRewardedVideoAvailable())
-        {
-            IronSource.Agent.showRewardedVideo(this.id_rewarded);
-        }
-        else
-        {
-            Debug.Log("Quảng cáo chưa sẵn sàng.");
-        }
-    }
-
-    #region InterstitialAd
-    void CreateInterstitialAd()
-    {
-        interstitialAd = new LevelPlayInterstitialAd(this.id_video);
-        interstitialAd.OnAdLoaded += InterstitialOnAdLoadedEvent;
-        interstitialAd.OnAdLoadFailed += InterstitialOnAdLoadFailedEvent;
-        interstitialAd.OnAdDisplayed += InterstitialOnAdDisplayedEvent;
-        interstitialAd.OnAdDisplayFailed += InterstitialOnAdDisplayFailedEvent;
-        interstitialAd.OnAdClicked += InterstitialOnAdClickedEvent;
-        interstitialAd.OnAdClosed += InterstitialOnAdClosedEvent;
-        interstitialAd.OnAdInfoChanged += InterstitialOnAdInfoChangedEvent;
-    }
-
-    void LoadInterstitialAd()
-    {
-        interstitialAd.LoadAd();
+        if(is_ads) RewardedAd.ShowRewardedAd();
     }
 
     public void show_ads_Interstitial()
@@ -215,27 +105,8 @@ public class IronSourceAds : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
-        if(interstitialAd==null) return;
-        
-        if (interstitialAd.IsAdReady())
-        {
-            interstitialAd.ShowAd(); 
-        }
+        if(is_ads) interstitialAd.ShowInterstitialAd();
     }
-
-    public void DestroyInterstitialAd()
-    {
-        interstitialAd.DestroyAd();
-    }
-
-    void InterstitialOnAdLoadedEvent(LevelPlayAdInfo adInfo) { }
-    void InterstitialOnAdLoadFailedEvent(LevelPlayAdError ironSourceError) { }
-    void InterstitialOnAdClickedEvent(LevelPlayAdInfo adInfo) { }
-    void InterstitialOnAdDisplayedEvent(LevelPlayAdInfo adInfo) { }
-    void InterstitialOnAdDisplayFailedEvent(LevelPlayAdDisplayInfoError adInfoError) { }
-    void InterstitialOnAdClosedEvent(LevelPlayAdInfo adInfo) { }
-    void InterstitialOnAdInfoChangedEvent(LevelPlayAdInfo adInfo) { }
-    #endregion
 
     public void RemoveAds()
     {
@@ -250,19 +121,9 @@ public class IronSourceAds : MonoBehaviour
         return this.is_ads;
     }
 
-    #region ImpressionSuccess callback handler
-
-    void ImpressionDataReadyEvent(IronSourceImpressionData impressionData)
-    {
-        Debug.Log("unity - script: I got ImpressionDataReadyEvent ToString(): " + impressionData.ToString());
-        Debug.Log("unity - script: I got ImpressionDataReadyEvent allData: " + impressionData.allData);
-    }
-    #endregion
-
     private void OnDisable()
     {
-        bannerAd?.DestroyAd();
-        interstitialAd?.DestroyAd();
+        bannerAd?.DestroyBannerAd();
     }
 }
 
