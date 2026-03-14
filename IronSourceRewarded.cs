@@ -8,7 +8,7 @@ public class IronSourceRewarded : MonoBehaviour
     private bool isRewarded = false;
     public UnityAction onRewardedSuccess;
     public void CreateRewardedAd(string id_rewarded_ads) {
-        RewardedAd= new LevelPlayRewardedAd(id_rewarded_ads);
+        RewardedAd = new LevelPlayRewardedAd(id_rewarded_ads);
         RewardedAd.OnAdLoaded += RewardedOnAdLoadedEvent;
         RewardedAd.OnAdLoadFailed += RewardedOnAdLoadFailedEvent;
         RewardedAd.OnAdDisplayed += RewardedOnAdDisplayedEvent;
@@ -19,12 +19,13 @@ public class IronSourceRewarded : MonoBehaviour
         RewardedAd.OnAdInfoChanged += RewardedOnAdInfoChangedEvent;
     }
     public void LoadRewardedAd() {  
-        RewardedAd.LoadAd();
+        RewardedAd?.LoadAd();
     }
+
     public void ShowRewardedAd() {
-        if (RewardedAd.IsAdReady()) {
+        if (RewardedAd != null && RewardedAd.IsAdReady()) {
             RewardedAd.ShowAd();
-            isRewarded = false;
+            this.isRewarded = false;
         }
     }
     
@@ -32,18 +33,23 @@ public class IronSourceRewarded : MonoBehaviour
     void RewardedOnAdLoadFailedEvent(LevelPlayAdError ironSourceError) { }
     void RewardedOnAdClickedEvent(LevelPlayAdInfo adInfo) { }
     void RewardedOnAdDisplayedEvent(LevelPlayAdInfo adInfo) { }
-    void RewardedOnAdDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error){}
+    void RewardedOnAdDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error)
+    {
+        this.LoadRewardedAd();
+    }
+
     void RewardedOnAdClosedEvent(LevelPlayAdInfo adInfo)
     {
         if (isRewarded)
         {
             onRewardedSuccess?.Invoke();
         }
+
+        this.LoadRewardedAd();
     }
     void RewardedOnAdRewarded(LevelPlayAdInfo adInfo, LevelPlayReward adReward)
     {
-        isRewarded=true;
+        isRewarded = true;
     } 
     void RewardedOnAdInfoChangedEvent(LevelPlayAdInfo adInfo) { }  
 }
-

@@ -5,10 +5,8 @@ public class IronSourceAdsInterstitial : MonoBehaviour
 {
     private LevelPlayInterstitialAd interstitialAd;
     public void CreateInterstitialAd(string id_ads_Inters) {
-	      //Create InterstitialAd instance
-        interstitialAd= new LevelPlayInterstitialAd(id_ads_Inters);
+        interstitialAd = new LevelPlayInterstitialAd(id_ads_Inters);
 
-        //Subscribe InterstitialAd events
         interstitialAd.OnAdLoaded += InterstitialOnAdLoadedEvent;
         interstitialAd.OnAdLoadFailed += InterstitialOnAdLoadFailedEvent;
         interstitialAd.OnAdDisplayed += InterstitialOnAdDisplayedEvent;
@@ -18,20 +16,30 @@ public class IronSourceAdsInterstitial : MonoBehaviour
         interstitialAd.OnAdInfoChanged += InterstitialOnAdInfoChangedEvent;
     }
     public void LoadInterstitialAd() {
-        interstitialAd.LoadAd();
+        interstitialAd?.LoadAd();
     }
-    public void ShowInterstitialAd() {
-        if (interstitialAd.IsAdReady()) {
-   		      interstitialAd.ShowAd();
-        }
+
+    public bool ShowInterstitialAd() {
+        if (interstitialAd == null) return false;
+        if (!interstitialAd.IsAdReady()) return false;
+
+        interstitialAd.ShowAd();
+        return true;
     }
   
-    //Implement InterstitialAd events
     void InterstitialOnAdLoadedEvent(LevelPlayAdInfo adInfo) { }
     void InterstitialOnAdLoadFailedEvent(LevelPlayAdError ironSourceError) { }
     void InterstitialOnAdClickedEvent(LevelPlayAdInfo adInfo) { }
     void InterstitialOnAdDisplayedEvent(LevelPlayAdInfo adInfo) { }
-    void InterstitialOnAdDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error){}
-    void InterstitialOnAdClosedEvent(LevelPlayAdInfo adInfo) { }
+    void InterstitialOnAdDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error)
+    {
+        this.LoadInterstitialAd();
+    }
+
+    void InterstitialOnAdClosedEvent(LevelPlayAdInfo adInfo)
+    {
+        this.LoadInterstitialAd();
+    }
+
     void InterstitialOnAdInfoChangedEvent(LevelPlayAdInfo adInfo) { }
 }
