@@ -94,7 +94,7 @@ public class IronSourceAds : MonoBehaviour
 
     public void ShowBannerAd()
     {
-        if (bannerAd != null&&is_ads) bannerAd.ShowBannerAd();
+        if (bannerAd != null && is_ads && this.is_sdk_ready) bannerAd.ShowBannerAd();
     }
 
     public void HideBannerAd()

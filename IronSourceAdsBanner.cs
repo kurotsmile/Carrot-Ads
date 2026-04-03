@@ -3,6 +3,8 @@ using Unity.Services.LevelPlay;
 public class IronSourceAdsBanner : MonoBehaviour
 {
     private LevelPlayBannerAd bannerAd;
+    private bool isBannerCreated = false;
+
     public void CreateBannerAd(string id_banner_ads)
     {
         var adConfig = new LevelPlayBannerAd.Config.Builder()
@@ -13,6 +15,7 @@ public class IronSourceAdsBanner : MonoBehaviour
             .Build();
 
         bannerAd = new LevelPlayBannerAd(id_banner_ads, adConfig);
+        isBannerCreated = true;
         bannerAd.OnAdLoaded += BannerOnAdLoadedEvent;
         bannerAd.OnAdLoadFailed += BannerOnAdLoadFailedEvent;
         bannerAd.OnAdDisplayed += BannerOnAdDisplayedEvent;
@@ -21,29 +24,41 @@ public class IronSourceAdsBanner : MonoBehaviour
         bannerAd.OnAdLeftApplication += BannerOnAdLeftApplicationEvent;
         bannerAd.OnAdExpanded += BannerOnAdExpandedEvent;
     }
+
     public void LoadBannerAd()
     {
+        if (!isBannerCreated || bannerAd == null) return;
         bannerAd.LoadAd();
     }
+
     public void ShowBannerAd()
     {
-        if (bannerAd != null) bannerAd.ShowAd();
+        if (!isBannerCreated || bannerAd == null) return;
+        bannerAd.ShowAd();
     }
+
     public void HideBannerAd()
     {
-        if (bannerAd != null) bannerAd.HideAd();
+        if (!isBannerCreated || bannerAd == null) return;
+        bannerAd.HideAd();
     }
+
     public void DestroyBannerAd()
     {
         bannerAd?.DestroyAd();
+        bannerAd = null;
+        isBannerCreated = false;
     }
 
     public void PauseAutoRefresh()
     {
+        if (!isBannerCreated || bannerAd == null) return;
         bannerAd.PauseAutoRefresh();
     }
+
     public void ResumeAutoRefresh()
     {
+        if (!isBannerCreated || bannerAd == null) return;
         bannerAd.ResumeAutoRefresh();
     }
 
